@@ -1,5 +1,7 @@
 // src/lib/api.ts
-const BASE = '/api/v1'
+// En dev: '/api/v1' (Vite proxya a localhost:3000).
+// En prod: VITE_API_URL absoluta, p.ej. https://api.midominio.com/api/v1
+const BASE = (import.meta.env.VITE_API_URL || '/api/v1').replace(/\/+$/, '')
 
 const TOKEN_KEY = 'astro_token'
 
@@ -13,6 +15,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     ...options,
     headers: {
       'Content-Type': 'application/json',
+      'ngrok-skip-browser-warning': 'true',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...options.headers,
     },
