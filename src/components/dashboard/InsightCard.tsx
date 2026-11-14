@@ -13,7 +13,7 @@ const riskBadge = {
 }
 
 export function InsightCard({ astronautId }: { astronautId?: string }) {
-  const { data, isLoading, isError } = useInsight(astronautId)
+  const { data, isLoading, isError, error } = useInsight(astronautId)
   const generate = useGenerateInsight(astronautId)
   const insight = data?.insight
 
@@ -34,7 +34,11 @@ export function InsightCard({ astronautId }: { astronautId?: string }) {
         {isLoading && (
           <div className="space-y-2"><Skeleton className="h-4 w-3/4" /><Skeleton className="h-4 w-1/2" /><Skeleton className="h-4 w-2/3" /></div>
         )}
-        {isError && <p className="text-sm text-muted-foreground">No se pudo generar el insight (¿GEMINI_API_KEY configurada?).</p>}
+        {isError && (
+          <p className="text-sm text-muted-foreground">
+            No se pudo generar el insight: {error instanceof Error ? error.message : 'error desconocido'}
+          </p>
+        )}
         {insight && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
