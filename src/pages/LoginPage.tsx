@@ -57,6 +57,15 @@ export default function LoginPage() {
               <Link to="/" className="hover:text-foreground">← Volver a la misión</Link>
             </p>
           </form>
+          <div className="mt-5 rounded-lg border border-dashed border-cyan-400/30 bg-cyan-400/5 p-3 text-center">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-cyan-300">Acceso demo</p>
+            <p className="mt-1 font-mono text-xs text-muted-foreground">test@astro.net · Teste12345</p>
+            <Button
+              size="sm" variant="ghost" className="mt-1.5 h-7 text-xs text-cyan-300 hover:text-cyan-200"
+              onClick={() => { setEmail('test@astro.net'); setPassword('Teste12345') }}>
+              Autocompletar credenciales
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
