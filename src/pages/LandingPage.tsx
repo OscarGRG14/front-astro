@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { Fragment, useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { animate, stagger } from 'animejs'
 import {
-  Activity, ArrowRight, BrainCircuit, Cpu, Gauge, HeartPulse, Moon,
+  Activity, ArrowRight, BookOpen, BrainCircuit, Cpu, ExternalLink, Gauge, HeartPulse, Moon,
   Radiation, Rocket, Satellite, ShieldAlert, Signal, Users, Zap,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -13,6 +13,7 @@ import { Starfield } from '@/components/landing/Starfield'
 import { OrbitVisual } from '@/components/landing/OrbitVisual'
 import { TelemetryStrip } from '@/components/landing/TelemetryStrip'
 import { IngestConsole } from '@/components/landing/IngestConsole'
+import { REFERENCES, REFERENCE_CATEGORIES } from '@/data/references'
 
 // ---------- datos ----------
 const hazards = [
@@ -134,6 +135,11 @@ export default function LandingPage() {
             <span className="font-semibold tracking-tight">AstroHealth</span>
             <Badge variant="outline" className="ml-2 hidden text-[10px] sm:inline-flex">NASA Space Apps</Badge>
           </div>
+          <nav className="hidden items-center gap-5 text-sm text-muted-foreground md:flex">
+            <a href="#riesgos" className="transition-colors hover:text-foreground">Riesgos</a>
+            <a href="#sistema" className="transition-colors hover:text-foreground">Sistema</a>
+            <a href="#referencias" className="transition-colors hover:text-foreground">Referencias</a>
+          </nav>
           <div className="flex items-center gap-3">
             {status !== null && (
               <span className="hidden items-center gap-1.5 text-xs sm:flex">
@@ -158,15 +164,9 @@ export default function LandingPage() {
               </Badge>
             </Reveal>
             <h1 ref={titleRef} className="text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl" style={{ perspective: '600px' }}>
-              {title1.split('').map((c, i) => (
-                <span key={i} className="hl inline-block opacity-0" style={{ transformStyle: 'preserve-3d' }}>{c === ' ' ? '\u00A0' : c}</span>
-              ))}
+              <TitleWords text={title1} />
               <br />
-              <span className="bg-gradient-to-r from-cyan-300 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
-                {title2.split('').map((c, i) => (
-                  <span key={i} className="hl inline-block opacity-0" style={{ transformStyle: 'preserve-3d' }}>{c === ' ' ? '\u00A0' : c}</span>
-                ))}
-              </span>
+              <TitleWords text={title2} gradient />
             </h1>
             <p className="hero-fade mx-auto mt-6 max-w-xl text-lg text-muted-foreground opacity-0 lg:mx-0">
               En misiones de larga duración el astronauta es su propio médico.
@@ -191,7 +191,7 @@ export default function LandingPage() {
       </section>
 
       {/* ===== Consola de ingesta ===== */}
-      <section className="relative mx-auto max-w-6xl px-6 py-14">
+      <section id="sistema" className="relative mx-auto max-w-6xl scroll-mt-20 px-6 py-14">
         <div className="grid items-center gap-8 lg:grid-cols-2">
           <Reveal>
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -235,7 +235,7 @@ export default function LandingPage() {
       </section>
 
       {/* ===== Los 4 riesgos ===== */}
-      <section className="relative mx-auto max-w-6xl px-6 py-16">
+      <section id="riesgos" className="relative mx-auto max-w-6xl scroll-mt-20 px-6 py-16">
         <Reveal className="mb-8 text-center">
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan-300">El desafío NASA</p>
           <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
@@ -303,6 +303,48 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ===== Referencias ===== */}
+      <section id="referencias" className="relative mx-auto max-w-6xl scroll-mt-20 px-6 py-16">
+        <Reveal className="mb-8 text-center">
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan-300">Fundamento científico</p>
+          <h2 className="mt-2 flex items-center justify-center gap-2 text-2xl font-bold tracking-tight sm:text-3xl">
+            <BookOpen className="size-6 text-primary" /> Fuentes & Referencias
+          </h2>
+          <p className="mx-auto mt-2 max-w-2xl text-muted-foreground">
+            Los umbrales de alertas, la taxonomía de riesgos y los instrumentos conductuales
+            se basan en documentación pública de la NASA y literatura clínica validada —
+            todo de acceso abierto.
+          </p>
+        </Reveal>
+        <div className="grid gap-8 md:grid-cols-2">
+          {REFERENCE_CATEGORIES.map((cat, ci) => (
+            <Reveal key={cat} delay={ci * 100}>
+              <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-cyan-300">
+                <span className="h-px w-6 bg-cyan-400/40" /> {cat}
+              </h3>
+              <ol className="space-y-3">
+                {REFERENCES.filter((r) => r.category === cat).map((r) => (
+                  <li key={r.id}>
+                    <a href={r.url} target="_blank" rel="noreferrer"
+                      className="group flex gap-3 rounded-lg border border-transparent p-2.5 -m-2.5 transition-colors hover:border-cyan-400/25 hover:bg-cyan-400/5">
+                      <span className="mt-0.5 font-mono text-xs text-cyan-300/60">[{r.id}]</span>
+                      <div className="min-w-0">
+                        <p className="flex flex-wrap items-center gap-2 text-sm font-medium leading-snug">
+                          {r.title}
+                          <ExternalLink className="size-3 shrink-0 text-muted-foreground transition-colors group-hover:text-cyan-300" />
+                        </p>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground line-clamp-3">{r.detail}</p>
+                        <p className="mt-1 font-mono text-[10px] uppercase tracking-wide text-muted-foreground/60">{r.source}</p>
+                      </div>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
       {/* ===== CTA final ===== */}
       <section className="relative mx-auto max-w-6xl px-6 py-20">
         <Reveal>
@@ -328,6 +370,43 @@ export default function LandingPage() {
         <span className="font-mono">React · Express · MongoDB · ESP8266 · Gemini · Socket.IO</span>
       </footer>
     </div>
+  )
+}
+
+
+/** Título del hero: letras animadas agrupadas por palabra para que el
+ *  salto de línea solo ocurra entre palabras (no dentro de ellas). */
+function TitleWords({ text, gradient = false }: { text: string; gradient?: boolean }) {
+  const words = text.split(' ')
+  let offset = 0
+  return (
+    <>
+      {words.map((word, wi) => {
+        const start = offset
+        offset += word.length + 1
+        return (
+          <Fragment key={wi}>
+            <span className="inline-block whitespace-nowrap">
+              {word.split('').map((c, li) => {
+                const i = start + li
+                return (
+                  <span key={li} className="hl inline-block opacity-0" style={gradient ? {
+                    transformStyle: 'preserve-3d',
+                    backgroundImage: 'linear-gradient(90deg, #67e8f9, #5eead4, #34d399)',
+                    backgroundSize: `${text.length * 100}% 100%`,
+                    backgroundPositionX: `${(i / Math.max(text.length - 1, 1)) * 100}%`,
+                    WebkitBackgroundClip: 'text',
+                    backgroundClip: 'text',
+                    color: 'transparent',
+                  } : { transformStyle: 'preserve-3d' }}>{c}</span>
+                )
+              })}
+            </span>
+            {wi < words.length - 1 ? ' ' : null}
+          </Fragment>
+        )
+      })}
+    </>
   )
 }
 
